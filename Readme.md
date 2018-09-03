@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Светлана Макеева](https://up.htmlacademy.ru/javascript/15/user/862767).
-* Наставник: Дмитрий Рябинин.
+* Наставник: [Дмитрий Рябинин](https://up.htmlacademy.ru/javascript/15/user/63289).
 
 ---
 
