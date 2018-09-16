@@ -17,30 +17,99 @@ min_y: 130,
 max_y: 630,
 marker_width: 50, // размеры маркера
 marker_height: 70,
-photos: ['http:o0.github.io/assets/images/tokyo/hotel1.jpg', 'http:o0.github.io/assets/images/tokyo/hotel2.jpg', 'http:o0.github.io/assets/images/tokyo/hotel3.jpg']
+photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg']
 }
+
+// вызываем функции
+var listAdd = generateAdd();
+addList(listAdd[0]);
+insertPin();
+
 	
 // Шаблон объявления
-function addList (add){
+function addList(){
+var offer;
+var author;
 var offerWindow = document.querySelector ('.card');                   // окно для вставки объекта аутор и оффер
 var windowText = offerWindow.querySelector('.map__card popup');       // куда ставим текст объявления, модальное окно
 var windowAvatar= offerWindow.querySelector('.popup__avatar');        // куда ставим аватарку объявления, модальное окно
-windowAvatar.src = add_all.author.avatar
+var addList = windowText.cloneNode(true);                             // делаем копию элемента https://learn.javascript.ru/modifying-document
+  windowAvatar.src = author.avatar                                    // src="{{author.avatar}}"
+
+  addList.querySelector('.popup__title').textContent = offer.title; // 2) заполните его данными из объекта и вставьте полученный DOM-элемент в блок .map перед блоком.map__filters-container
+	addList.querySelector('.popup__address').textContent = offer.adress;
+	addList.querySelector('.popup__price').innerHTML = getPrice(offer.price);
+	addList.querySelector('.popup__type').textContent = rusType(offer.type);
+	addList.querySelector('.popup__rooms-and-guests').textContent = getGuestsRooms(offer.guests, offer.rooms);
+	addList.querySelector('.popup__checkin-time').textContent = getTime(offer.checkin, offer.checkout);
+	addList.querySelector('.popup__features').appendChild = offer.features;
+	addList.querySelector('.popup__description').textContent = offer.description;
+	addList.querySelector('.popup__photos').appendChild = offer.photos;
+  
+ offerWindow.appendChild(addList); 
+}
+
+// генерация JS объектов с all
+function generateAdd() {
+  var add = [];
+	// «x»: случайное число, координата x метки на карте. Значение ограничено размерами блока, в котором перетаскивается метка.
+	// «y»: случайное число, координата y метки на карте от 130 до 630.
+	for (var i = 0; i < all.users; i++) {
+	var locationX = getRandomNumber(all.min_x, all.max_x);
+	var locationY = getRandomNumber(all.min_y, all.max_y);
+	// 1) На основе первого по порядку элемента из сгенерированного массива и шаблона .map__card создайте DOM-элемент объявления
+add.push({                                                             //array.push( elem1, elem2, ... ) добавляем новые элементы к массиву и возвращает новую длину массива
+	author: {
+	avatar: avatars[i]
+	},
+	offer: {
+	title: getRandomItem(all.title),                                   // "title": строка, заголовок предложения, одно из фиксированных значений
+	adress: (locationX + ', ' + locationY),
+  checkin: getRandomItem(all.time_in),   
+	checkout: getRandomItem(all.time_out),                             // "checkout": строка с одним из трёх фиксированных значений timе. Выезд.checkin: getRandomItem(all.time_in),                               // "checkin": строка с одним из трёх фиксированных значений time;p’[;. Заезд.
+	price: getRandomNumber(all.min_price, all.max_price),              // "price": число, случайная цена от 1000 до 1000000
+	guests: getRandomNumber(all.min_guests, all.max_guests),           // guests - можно разместить гостей в комнате, рандомное число
+	features: getArrayLength(all.service),                             // features - массив строк случайной длины из ниже предложенных
+	type: getRandomItem(all.type_rooms),                               // "type": строка с одним из четырёх фиксированных значений: palace, flat, house или bungalo
+	rooms: getRandomNumber(all.min_rooms, all.max_rooms),              // "rooms": число, случайное количество комнат от 1 до 5
+	description: '',
+	photos: getRandomItem(all.photos)
+	},
+ location:{
+  x: locationX,
+  y: locationY
+  }
+	});
+}
+return add;
 }
 
 /* "avatar": строка, адрес изображения вида img/avatars/user{{xx}}.png,
 	где {{xx}} это число от 1 до 8 с ведущим нулём. Например, 01, 02 и т. д.
 	Адреса изображений не повторяются
 	*/
-	var avatars = function (generateAvatars){
+	var avatars = function (){
 	var arhiveAvatars = [];
 	for (var i = 1; i < all.users; i++){
 	i = '0' + i;
 	avatars  = 'img/avatars/user' + i + '.png';
+  arhiveAvatars.push(avatars); // добавляем новые элементы к массиву и возвращаем новую длину массива
 	}
-	return avatars;
+	return arhiveAvatars;
 	};
 	
+
+// Отрисовка на странице маркера
+function insertPin() {
+var mapPin= document.querySelector('.map__pins');
+var mapPin2 = document.createDocumentFragment(); //https://gyazo.com/a76256d93ecffc1a9a94b66a3e6990db
+// цикл на создание и клонирование маркеров
+ for (var i = 0; i < listAdd.length; i++) {
+mapPin2.appendChild(createPin(listAdd[i])); 
+ }
+mapPin.appendChild(MapPin2);
+}
+
 	// Маркер
 	function createPin(marker){
 	var userLocation = document.createElement('div');
@@ -53,61 +122,19 @@ windowAvatar.src = add_all.author.avatar
 	userLocation.style.left = (locationX - all.marker_height) + 'px';
 	userLocation.style.top = locationY - (all.marker_width / 2) + 'px';
 	userAvatar.className = 'popup__avatar';
-	userAvatar.style.left = 70;
-	userAvatar.style.top = 70;
-	userAvatar.src = add_all.author.avatar;
+	userAvatar.width = 70;
+	userAvatar.height = 70;
+	userAvatar.src = marker.author.avatar;
 	userLocation.appendChild(userAvatar);
 	return userLocation;
 	}
 
-// Отрисовка на странице маркера
-var mapPin= document.querySelector('.map__pins');
-var mapPin2 = document.createDocumentMapPin2();
-mapPin.appendChild(createPin(MapPin2));
-
 	// уберите класс .map—faded
 	map.classList.toggle('.map-faded');
 	
-	// «x»: случайное число, координата x метки на карте. Значение ограничено размерами блока, в котором перетаскивается метка.
-	// «y»: случайное число, координата y метки на карте от 130 до 630.
-	for (var i = 0; i < all.users; i++) {
-	var locationX = getRandomNumber(all.min_x, all.max_x);
-	var locationY = getRandomNumber(all.min_y, all.max_y);
-	}
-	
-	// 1) На основе первого по порядку элемента из сгенерированного массива и шаблона .map__card создайте DOM-элемент объявления
-var add_all = {
-	author: {
-	avatar: avatars[i]
-	},
-	offer: {
-	title: getRandomItem(all.title),                                    // "title": строка, заголовок предложения, одно из фиксированных значений
-	adress: (locationX + ', ' + locationY),
-    checkin: getRandomItem(all.time_in),   
-	checkout: getRandomItem(all.time_out),                             // "checkout": строка с одним из трёх фиксированных значений timе. Выезд.checkin: getRandomItem(all.time_in),                               // "checkin": строка с одним из трёх фиксированных значений time;p’[;. Заезд.
-	price: getRandomNumber(all.min_price, all.max_price),              // "price": число, случайная цена от 1000 до 1000000
-	guests: getRandomNumber(all.min_guests, all.max_guests),           // guests - можно разместить гостей в комнате, рандомное число
-	features: getArrayLength(all.service),                             // features - массив строк случайной длины из ниже предложенных
-	type: getRandomItem(all.type_rooms),                               // "type": строка с одним из четырёх фиксированных значений: palace, flat, house или bungalo
-	rooms: getRandomNumber(all.min_rooms, all.max_rooms),              // "rooms": число, случайное количество комнат от 1 до 5
-	description: '',
-	photos: getRandomItem(all.photos)
-	}
-	}
-	
-	// 2) заполните его данными из объекта и вставьте полученный DOM-элемент в блок .map перед блоком.map__filters-container
-var adsList
-    adsList.querySelector('.popup__title').textContent = add_all.offer.title;
-	adsList.querySelector('.popup__address').textContent = add_all.offer.adress;
-	adsList.querySelector('.popup__price').innerHTML = getPrice(add_all.offer.price);
-	adsList.querySelector('.popup__type').textContent = rusType(add_all.offer.type);
-	adsList.querySelector('.popup__rooms-and-guests').textContent = getGuestsRooms(add_all.offer.guests, add_all.offer.rooms);
-	adsList.querySelector('.popup__checkin-time').textContent = getTime(add_all.offer.checkin, add_all.offer.checkout);
-	adsList.querySelector('.popup__features').appendChild = add_all.offer.features;
-	adsList.querySelector('.popup__description').textContent = add_all.offer.description;
-	adsList.querySelector('.popup__photos').appendChild = add_all.offer.photos;
 
-	// Выведите цену строкой вида {{offer.price}}₽/ночь
+	
+		// Выведите цену строкой вида {{offer.price}}₽/ночь
 	function getPrice(price) {
 	return price + ' ₽/ночь';
 	}
@@ -147,7 +174,7 @@ var adsList
 	}
 	
 	// Новый массив с возвратом части существующего массива (на выборе сервиса)
-	function getArrayLength(service) {
+	function getArrayLength() {
 	var newFeatures = all.service.slice();
 	newFeatures.length = getRandomNumber(all.service.length);
 	return newFeatures;
