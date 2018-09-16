@@ -1,24 +1,23 @@
-var all = {
-users: 8, // количество маркеров
-title: ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'],
-min_price: 1000,    // price - цены в диапазоне
-max_price: 1000000,
-type_rooms: ['palace', 'flat', 'house', 'bungalo'], // type
-min_rooms: 1,   // rooms - количество комнат
-max_rooms: 5,
-min_guests: 1,   // guests - можно разместить гостей в комнате, рандомное число
-max_guests: 10,
-time_in: ['12:00', '13:00', '14:00'],  // checkin, checkout
-time_out: ['12:00', '13:00', '14:00'],
-service: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],   // features
-min_x: 300, // координаты маркера на карте
-max_x: 750,
-min_y: 130,
-max_y: 630,
-marker_width: 50, // размеры маркера
-marker_height: 70,
-photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg']
-}
+var users: 8; // количество маркеров
+var title = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
+var min_price = 1000;
+var max_price = 1000000;
+var type_rooms = ['palace', 'flat', 'house', 'bungalo'];
+var min_rooms = 1;
+var max_rooms = 5;
+var min_guests = 1;
+var max_guests = 10;
+var time_in = ['12:00', '13:00', '14:00'];
+var time_out = ['12:00', '13:00', '14:00'];
+var service = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var min_x = 300;
+var max_x = 750;
+var min_y = 130;
+var max_y = 630;
+var marker_width = 50;
+var marker_height = 70;
+var photos = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+
 
 // вызываем функции
 var listAdd = generateAdd();
@@ -54,26 +53,26 @@ function generateAdd() {
   var add = [];
 	// «x»: случайное число, координата x метки на карте. Значение ограничено размерами блока, в котором перетаскивается метка.
 	// «y»: случайное число, координата y метки на карте от 130 до 630.
-	for (var i = 0; i < all.users; i++) {
-	var locationX = getRandomNumber(all.min_x, all.max_x);
-	var locationY = getRandomNumber(all.min_y, all.max_y);
+	for (var i = 0; i < users; i++) {
+	var locationX = getRandomNumber(min_x, max_x);
+	var locationY = getRandomNumber(min_y, max_y);
 	// 1) На основе первого по порядку элемента из сгенерированного массива и шаблона .map__card создайте DOM-элемент объявления
 add.push({                                                             //array.push( elem1, elem2, ... ) добавляем новые элементы к массиву и возвращает новую длину массива
 	author: {
 	avatar: avatars[i]
 	},
 	offer: {
-	title: getRandomItem(all.title),                                   // "title": строка, заголовок предложения, одно из фиксированных значений
+	title: getRandomItem(title),                                   // "title": строка, заголовок предложения, одно из фиксированных значений
 	adress: (locationX + ', ' + locationY),
-  checkin: getRandomItem(all.time_in),   
-	checkout: getRandomItem(all.time_out),                             // "checkout": строка с одним из трёх фиксированных значений timе. Выезд.checkin: getRandomItem(all.time_in),                               // "checkin": строка с одним из трёх фиксированных значений time;p’[;. Заезд.
-	price: getRandomNumber(all.min_price, all.max_price),              // "price": число, случайная цена от 1000 до 1000000
-	guests: getRandomNumber(all.min_guests, all.max_guests),           // guests - можно разместить гостей в комнате, рандомное число
-	features: getArrayLength(all.service),                             // features - массив строк случайной длины из ниже предложенных
-	type: getRandomItem(all.type_rooms),                               // "type": строка с одним из четырёх фиксированных значений: palace, flat, house или bungalo
-	rooms: getRandomNumber(all.min_rooms, all.max_rooms),              // "rooms": число, случайное количество комнат от 1 до 5
+  checkin: getRandomItem(time_in),   
+	checkout: getRandomItem(time_out),                             // "checkout": строка с одним из трёх фиксированных значений timе. Выезд.checkin: getRandomItem(all.time_in),                               // "checkin": строка с одним из трёх фиксированных значений time;p’[;. Заезд.
+	price: getRandomNumber(min_price, max_price),              // "price": число, случайная цена от 1000 до 1000000
+	guests: getRandomNumber(min_guests, max_guests),           // guests - можно разместить гостей в комнате, рандомное число
+	features: getArrayLength(service),                             // features - массив строк случайной длины из ниже предложенных
+	type: getRandomItem(type_rooms),                               // "type": строка с одним из четырёх фиксированных значений: palace, flat, house или bungalo
+	rooms: getRandomNumber(min_rooms, max_rooms),              // "rooms": число, случайное количество комнат от 1 до 5
 	description: '',
-	photos: getRandomItem(all.photos)
+	photos: getRandomItem(photos)
 	},
  location:{
   x: locationX,
@@ -90,7 +89,7 @@ return add;
 	*/
 	var avatars = function (){
 	var arhiveAvatars = [];
-	for (var i = 1; i < all.users; i++){
+	for (var i = 1; i < users; i++){
 	i = '0' + i;
 	avatars  = 'img/avatars/user' + i + '.png';
   arhiveAvatars.push(avatars); // добавляем новые элементы к массиву и возвращаем новую длину массива
@@ -175,8 +174,8 @@ mapPin.appendChild(MapPin2);
 	
 	// Новый массив с возвратом части существующего массива (на выборе сервиса)
 	function getArrayLength() {
-	var newFeatures = all.service.slice();
-	newFeatures.length = getRandomNumber(all.service.length);
+	var newFeatures = service.slice();
+	newFeatures.length = getRandomNumber(service.length);
 	return newFeatures;
 	}
 
