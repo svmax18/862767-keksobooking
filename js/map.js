@@ -76,8 +76,8 @@ function generateAdd() {
   }
   return add;
 }
-
-var avatars = function () {  //генерирует авки
+// генерирует авки
+var avatars = function () {
   var arhiveAvatars = [];
   for (var i = 1; i <= users; i++) {
     i = '0' + i;
