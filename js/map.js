@@ -1,4 +1,4 @@
-var users: 8; // количество маркеров
+var users = 8; // количество маркеров
 var title = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var min_price = 1000;
 var max_price = 1000000;
@@ -118,8 +118,8 @@ mapPin.appendChild(MapPin2);
 	а координаты, на которые указывает метка своим острым концом. Чтобы найти эту координату нужно учесть
 	размеры элемента с меткой.*/
 	userLocation.className = 'map__pins';
-	userLocation.style.left = (locationX - all.marker_height) + 'px';
-	userLocation.style.top = locationY - (all.marker_width / 2) + 'px';
+	userLocation.style.left = (locationX - marker_height) + 'px';
+	userLocation.style.top = locationY - (marker_width / 2) + 'px';
 	userAvatar.className = 'popup__avatar';
 	userAvatar.width = 70;
 	userAvatar.height = 70;
@@ -178,5 +178,3 @@ mapPin.appendChild(MapPin2);
 	newFeatures.length = getRandomNumber(service.length);
 	return newFeatures;
 	}
-
-
