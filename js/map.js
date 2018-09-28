@@ -284,7 +284,7 @@ var getMainPinCoords = function () {
   return coords;
 };
 
-// Вносим позицию главной геометки в поле Адрес
+// Вносим позицию главной геометки в поле Адрес - не отображает
 var setAddress = function (coords) {
   form.querySelector('#address').value = coords.x + ', ' + coords.y;
 };
