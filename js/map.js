@@ -208,33 +208,23 @@ var showPins = function (array) {
   });
 };
 
-// на неактивные элементы
-var deactiveElem  = function(selector){
-  var elList = document.querySelectorAll(selector);
-  elList.forEach(function (el) {
-    el.setAttribute('disabled', '');
-  });
-};
+var setDisabledForm = function(disabled) {
+  var classList = blockAdForm.classList;
 
-// на активные элементы
-var activeElem = function(selector){
-  var elList = document.querySelectorAll(selector);
-  elList.forEach(function (el) {
-    el.removeAttribute('disabled');
+  disabled ? classList.add('ad-form--disabled') : classList.remove('ad-form--disabled');
+  blockAdForm.querySelectorAll('fieldset').forEach(function(item) {
+    item.disabled = disabled;
   });
-};
+}
 
 var activate = function() {
   blockMap.classList.remove('map--faded');
-  blockAdForm.classList.remove('ad-form--disabled');
-  activeElem('input');
-  activeElem('select');
+  setDisabledForm();
   showPins();
 }
 
 var deactivate = function() {
-  deactiveElem('input');
-  deactiveElem('select');
+
   hidePins();
 }
 
@@ -284,12 +274,12 @@ var getMainPinCoords = function () {
   return coords;
 };
 
-// Вносим позицию главной геометки в поле Адрес - не отображает
+// Вносим позицию главной геометки в поле Адрес
 var setAddress = function (coords) {
   form.querySelector('#address').value = coords.x + ', ' + coords.y;
 };
 
-setAddress();
+setAddress( getMainPinCoords() );
 
 // Отключаем слушатели
 document.removeEventListener('mouseup', mainMapPinElem);
