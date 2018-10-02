@@ -100,17 +100,25 @@ var getRandomItem = function (array) {
   return array[randomIndex];
 };
 
-var getMapPins = function (data, template) {
+var getMapPins = function (data) {
   var fragment = document.createDocumentFragment();
   data.forEach(function (item) {
-    var clone = template.cloneNode(true);
-    clone.style.left = item.location.x - WIDTH_PIN / 2 + 'px';
-    clone.style.top = item.location.y - HEIGHT_PIN + 'px';
-    clone.querySelector('img').src = item.author.avatar;
-    fragment.appendChild(clone);
+    fragment.appendChild(getMapPin(item));
   });
 
   return fragment;
+};
+
+var getMapPin = function(data) {
+  var mapPin = mapPinTemplate.cloneNode(true);
+  mapPin.style.left = data.location.x - WIDTH_PIN / 2 + 'px';
+  mapPin.style.top = data.location.y - HEIGHT_PIN + 'px';
+  mapPin.querySelector('img').src = data.author.avatar;
+
+  mapPin.addEventListener('click', function() {
+    openPopUp(data);
+  });
+  return mapPin;
 };
 
 var getFeatures = function (data) {
@@ -198,7 +206,6 @@ var hidePins = function () {
   });
 };
 
-
 // Показываем геометки (на правку далее)
 var showPins = function (array) {
   var pins = document.querySelectorAll('.map__pin');
@@ -208,33 +215,23 @@ var showPins = function (array) {
   });
 };
 
-// на неактивные элементы
-var deactiveElem  = function(selector){
-  var elList = document.querySelectorAll(selector);
-  elList.forEach(function (el) {
-    el.setAttribute('disabled', '');
-  });
-};
+var setDisabledForm = function(disabled) {
+  var classList = blockAdForm.classList;
 
-// на активные элементы
-var activeElem = function(selector){
-  var elList = document.querySelectorAll(selector);
-  elList.forEach(function (el) {
-    el.removeAttribute('disabled');
+  disabled ? classList.add('ad-form--disabled') : classList.remove('ad-form--disabled');
+  blockAdForm.querySelectorAll('fieldset').forEach(function(item) {
+    item.disabled = disabled;
   });
-};
+}
 
 var activate = function() {
   blockMap.classList.remove('map--faded');
-  blockAdForm.classList.remove('ad-form--disabled');
-  activeElem('input');
-  activeElem('select');
+  setDisabledForm(false);
   showPins();
 }
 
 var deactivate = function() {
-  deactiveElem('input');
-  deactiveElem('select');
+  setDisabledForm(true);
   hidePins();
 }
 
@@ -253,8 +250,8 @@ var openPopUp = function(){
   popUpOpen.classList.remove('hidden');
 
   document.addEventListener('keydown',
-  function(evt){
-    if (evt.keyCode === 27){
+  function(){
+    if (ESC_KEYCODE === 27){
       popUpOpen.classList.add('hidden');
     }
   });  
@@ -289,7 +286,7 @@ var setAddress = function (coords) {
   form.querySelector('#address').value = coords.x + ', ' + coords.y;
 };
 
-setAddress();
+setAddress( getMainPinCoords() );
 
 // Отключаем слушатели
 document.removeEventListener('mouseup', mainMapPinElem);
