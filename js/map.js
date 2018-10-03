@@ -251,7 +251,7 @@ var deactivate = function() {
   hidePins();
 }
 
-// активация по "движению"
+// активация по "движению" кекса
 var mainMapPinElem = document.querySelector('.map__pin--main');
 mainMapPinElem.addEventListener('mouseup', function() {
   activate();
@@ -280,5 +280,12 @@ var getMainPinCoords = function () {
 var setAddress = function (coords) {
   form.querySelector('#address').value = coords.x + ', ' + coords.y;
 };
+
+// Открыть фото в новом окне
+function changeSizeImage(im) {
+  var win ="width=600,height=600"
+  newWin = window.open(im.src,"newWin",win);
+  newWin.focus();
+}
 
 setAddress( getMainPinCoords() );

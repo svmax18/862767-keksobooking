@@ -24,7 +24,7 @@ var priceInput = form.querySelector('#price');
 var timeInInput = form.querySelector('#timein');
 var timeOutInput = form.querySelector('#timeout');
 
-  // ??? тут трабл
+// ??? тут трабл
 var type = function (){
   var value = MIN_PRICES[evt.target.value];
   priceInput.setAttribute('min', value);
@@ -48,7 +48,6 @@ var roomNumberChange = function (evt) {
     capacityInput.querySelector('.capacity' + capacity[i]).disabled = false;
   }
 };
-
 
 // валид на заголовок
 function validationTitle(evt) {
