@@ -154,6 +154,7 @@ var getRusType = function (type) {
 var getMapCard = function (data, template) {
   var mapCard = template.cloneNode(true);
   mapCard.querySelector('.popup__title').textContent = data.offer.title;
+  mapCard.querySelector('.popup__avatar').src = data.author.avatar;
   mapCard.querySelector('.popup__text--address').textContent = data.offer.adress;
   mapCard.querySelector('.popup__text--price').textContent = getPrice(data.offer.price);
   mapCard.querySelector('.popup__type').textContent = getRusType(data.offer.type);
@@ -168,6 +169,19 @@ var getMapCard = function (data, template) {
   var photos = mapCard.querySelector('.popup__photos');
   photos.innerHTML = '';
   photos.appendChild(getPhotos(data.offer.photos, popupPhotoTemplate));
+
+  mapCard.querySelector('.popup__close').addEventListener('click', function() {
+    mapCard.hidden = true;
+  });
+
+  var keyboard = function(){
+    addEventListener('keydown', function() {
+      if (ESC_KEYCODE === 27){
+        mapCard.hidden = true;
+      }
+    })
+  };
+  keyboard();
 
   return mapCard;
 };
@@ -192,10 +206,10 @@ var mapCardTemplate = document.querySelector('#card').content.querySelector('.ma
 var popupPhotoTemplate = mapCardTemplate.querySelector('.popup__photo');
 var testData = generateAds(8);
 var mapCard = getMapCard(testData[0], mapCardTemplate);
+var form = document.querySelector('.notice');
 
 // blockMap.classList.remove('map--faded');
 blockMap.querySelector('.map__pins').appendChild(getMapPins(testData, mapPinTemplate));
-blockMap.insertBefore(mapCard, blockMap.querySelector('.map__filters-container'));
 
 // Скрываем геометки
 var hidePins = function () {
@@ -206,7 +220,7 @@ var hidePins = function () {
   });
 };
 
-// Показываем геометки (на правку далее)
+// Показываем геометки 
 var showPins = function (array) {
   var pins = document.querySelectorAll('.map__pin');
 
@@ -224,17 +238,20 @@ var setDisabledForm = function(disabled) {
   });
 }
 
+// активный вид
 var activate = function() {
   blockMap.classList.remove('map--faded');
   setDisabledForm(false);
   showPins();
 }
 
+// неактивный вид
 var deactivate = function() {
   setDisabledForm(true);
   hidePins();
 }
 
+// активация по "движению"
 var mainMapPinElem = document.querySelector('.map__pin--main');
 mainMapPinElem.addEventListener('mouseup', function() {
   activate();
@@ -242,35 +259,13 @@ mainMapPinElem.addEventListener('mouseup', function() {
 
 deactivate();
 
-var forPopUpPin = document.querySelector('.map__pin:not(.map__pin--main)');
-var popUpOpen = document.querySelector('.map__card');
-var popUpClose = document.querySelector('.popup__close');
+var openPopUp = function(data) {
+  var mapFilters = blockMap.querySelector('.map__filters-container');
+  var card = getMapCard(data, mapCardTemplate);
+  var oldCard = blockMap.querySelector('.map__card');
 
-var openPopUp = function(){
-  popUpOpen.classList.remove('hidden');
-
-  document.addEventListener('keydown',
-  function(){
-    if (ESC_KEYCODE === 27){
-      popUpOpen.classList.add('hidden');
-    }
-  });  
+  oldCard ? blockMap.replaceChild(card, oldCard) : blockMap.insertBefore(card, mapFilters); 
 };
-
-var closePopUp = function(){
-  popUpOpen.classList.add('hidden');
-};
-
-forPopUpPin.addEventListener('click', function() {
-  openPopUp();
-});
-
-popUpClose.addEventListener('click', function() {
-  closePopUp();
-});
-
-
-var form = document.querySelector('.notice');
 
 // Получаем координаты главной геометки
 var getMainPinCoords = function () {
@@ -287,6 +282,3 @@ var setAddress = function (coords) {
 };
 
 setAddress( getMainPinCoords() );
-
-// Отключаем слушатели
-document.removeEventListener('mouseup', mainMapPinElem);
