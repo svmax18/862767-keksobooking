@@ -48,6 +48,7 @@ var MIN_GUEST = 1;
 var MAX_GUEST = 10;
 
 var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
 
 var minX = 300;
 var maxX = 900;
@@ -109,13 +110,13 @@ var getMapPins = function (data) {
   return fragment;
 };
 
-var getMapPin = function(data) {
+var getMapPin = function (data) {
   var mapPin = mapPinTemplate.cloneNode(true);
   mapPin.style.left = data.location.x - WIDTH_PIN / 2 + 'px';
   mapPin.style.top = data.location.y - HEIGHT_PIN + 'px';
   mapPin.querySelector('img').src = data.author.avatar;
 
-  mapPin.addEventListener('click', function() {
+  mapPin.addEventListener ('click', function () {
     openPopUp(data);
   });
   return mapPin;
@@ -154,6 +155,7 @@ var getRusType = function (type) {
 var getMapCard = function (data, template) {
   var mapCard = template.cloneNode(true);
   mapCard.querySelector('.popup__title').textContent = data.offer.title;
+  mapCard.querySelector('.popup__avatar').src = data.author.avatar;
   mapCard.querySelector('.popup__text--address').textContent = data.offer.adress;
   mapCard.querySelector('.popup__text--price').textContent = getPrice(data.offer.price);
   mapCard.querySelector('.popup__type').textContent = getRusType(data.offer.type);
@@ -168,6 +170,18 @@ var getMapCard = function (data, template) {
   var photos = mapCard.querySelector('.popup__photos');
   photos.innerHTML = '';
   photos.appendChild(getPhotos(data.offer.photos, popupPhotoTemplate));
+
+  mapCard.querySelector('.popup__close').addEventListener('click', function () {
+    mapCard.hidden = true;
+  });
+
+  var keyboard = function () {
+    addEventListener('keydown', function () {
+      if (ESC_KEYCODE) {
+        mapCard.hidden = true;
+      }
+    });
+  }();
 
   return mapCard;
 };
@@ -192,10 +206,10 @@ var mapCardTemplate = document.querySelector('#card').content.querySelector('.ma
 var popupPhotoTemplate = mapCardTemplate.querySelector('.popup__photo');
 var testData = generateAds(8);
 var mapCard = getMapCard(testData[0], mapCardTemplate);
+var form = document.querySelector('.notice');
 
 // blockMap.classList.remove('map--faded');
 blockMap.querySelector('.map__pins').appendChild(getMapPins(testData, mapPinTemplate));
-blockMap.insertBefore(mapCard, blockMap.querySelector('.map__filters-container'));
 
 // Скрываем геометки
 var hidePins = function () {
@@ -206,7 +220,7 @@ var hidePins = function () {
   });
 };
 
-// Показываем геометки (на правку далее)
+// Показываем геометки
 var showPins = function (array) {
   var pins = document.querySelectorAll('.map__pin');
 
@@ -215,62 +229,41 @@ var showPins = function (array) {
   });
 };
 
-var setDisabledForm = function(disabled) {
+var setDisabledForm = function (disabled) {
   var classList = blockAdForm.classList;
 
   disabled ? classList.add('ad-form--disabled') : classList.remove('ad-form--disabled');
-  blockAdForm.querySelectorAll('fieldset').forEach(function(item) {
+  blockAdForm.querySelectorAll('fieldset').forEach(function (item) {
     item.disabled = disabled;
   });
-}
+};
 
-var activate = function() {
+// активный вид
+var activate = function () {
   blockMap.classList.remove('map--faded');
   setDisabledForm(false);
   showPins();
-}
+};
 
-var deactivate = function() {
+// неактивный вид
+var deactivate = function () {
   setDisabledForm(true);
   hidePins();
-}
+};
 
+// активация по "движению" кекса
 var mainMapPinElem = document.querySelector('.map__pin--main');
-mainMapPinElem.addEventListener('mouseup', function() {
+mainMapPinElem.addEventListener('mouseup', function () {
   activate();
 });
 
-deactivate();
+var openPopUp = function (data) {
+  var mapFilters = blockMap.querySelector('.map__filters-container');
+  var card = getMapCard(data, mapCardTemplate);
+  var oldCard = blockMap.querySelector('.map__card');
 
-var forPopUpPin = document.querySelector('.map__pin:not(.map__pin--main)');
-var popUpOpen = document.querySelector('.map__card');
-var popUpClose = document.querySelector('.popup__close');
-
-var openPopUp = function(){
-  popUpOpen.classList.remove('hidden');
-
-  document.addEventListener('keydown',
-  function(){
-    if (ESC_KEYCODE === 27){
-      popUpOpen.classList.add('hidden');
-    }
-  });  
+  oldCard ? blockMap.replaceChild(card, oldCard) : blockMap.insertBefore(card, mapFilters);
 };
-
-var closePopUp = function(){
-  popUpOpen.classList.add('hidden');
-};
-
-forPopUpPin.addEventListener('click', function() {
-  openPopUp();
-});
-
-popUpClose.addEventListener('click', function() {
-  closePopUp();
-});
-
-
-var form = document.querySelector('.notice');
 
 // Получаем координаты главной геометки
 var getMainPinCoords = function () {
@@ -286,7 +279,20 @@ var setAddress = function (coords) {
   form.querySelector('#address').value = coords.x + ', ' + coords.y;
 };
 
-setAddress( getMainPinCoords() );
+// Открыть фото в новом окне
+function changeSizeImage(im) {
+  var win = 'width=600, height=600';
+  var newWin = window.open(im.src, 'newWin', win);
+  newWin.focus();
+}
+var setAddress2 = function(){setAddress(getMainPinCoords())};
 
-// Отключаем слушатели
-document.removeEventListener('mouseup', mainMapPinElem);
+
+deactivate();
+setAddress2();
+
+// EXPORT
+(window.map = {
+  getMainPinCoords: getMainPinCoords,
+  setAddressPin: setAddress2
+})()
