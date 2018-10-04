@@ -25,7 +25,7 @@ var timeInInput = form.querySelector('#timein');
 var timeOutInput = form.querySelector('#timeout');
 
 // ??? тут трабл
-var type = function (){
+var type = function () {
   var value = MIN_PRICES[evt.target.value];
   priceInput.setAttribute('min', value);
   priceInput.setAttribute('placeholder', value);
@@ -91,5 +91,5 @@ timeOutInput.addEventListener('change', function (evt) {
 
 roomNumberInput.addEventListener('change', roomNumberChange);
 titleForm.addEventListener('invalid', validationTitle);
-typeForm.addEventListener('invalid', type);
+typeForm.addEventListener('invalid', validationPrice);
 

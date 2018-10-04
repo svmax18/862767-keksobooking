@@ -48,6 +48,7 @@ var MIN_GUEST = 1;
 var MAX_GUEST = 10;
 
 var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
 
 var minX = 300;
 var maxX = 900;
@@ -109,13 +110,13 @@ var getMapPins = function (data) {
   return fragment;
 };
 
-var getMapPin = function(data) {
+var getMapPin = function (data) {
   var mapPin = mapPinTemplate.cloneNode(true);
   mapPin.style.left = data.location.x - WIDTH_PIN / 2 + 'px';
   mapPin.style.top = data.location.y - HEIGHT_PIN + 'px';
   mapPin.querySelector('img').src = data.author.avatar;
 
-  mapPin.addEventListener('click', function() {
+  mapPin.addEventListener ('click', function () {
     openPopUp(data);
   });
   return mapPin;
@@ -170,18 +171,17 @@ var getMapCard = function (data, template) {
   photos.innerHTML = '';
   photos.appendChild(getPhotos(data.offer.photos, popupPhotoTemplate));
 
-  mapCard.querySelector('.popup__close').addEventListener('click', function() {
+  mapCard.querySelector('.popup__close').addEventListener('click', function () {
     mapCard.hidden = true;
   });
 
-  var keyboard = function(){
-    addEventListener('keydown', function() {
-      if (ESC_KEYCODE === 27){
+  var keyboard = function () {
+    addEventListener('keydown', function () {
+      if (ESC_KEYCODE) {
         mapCard.hidden = true;
       }
-    })
-  };
-  keyboard();
+    });
+  }();
 
   return mapCard;
 };
@@ -220,7 +220,7 @@ var hidePins = function () {
   });
 };
 
-// Показываем геометки 
+// Показываем геометки
 var showPins = function (array) {
   var pins = document.querySelectorAll('.map__pin');
 
@@ -229,42 +229,40 @@ var showPins = function (array) {
   });
 };
 
-var setDisabledForm = function(disabled) {
+var setDisabledForm = function (disabled) {
   var classList = blockAdForm.classList;
 
   disabled ? classList.add('ad-form--disabled') : classList.remove('ad-form--disabled');
-  blockAdForm.querySelectorAll('fieldset').forEach(function(item) {
+  blockAdForm.querySelectorAll('fieldset').forEach(function (item) {
     item.disabled = disabled;
   });
-}
+};
 
 // активный вид
-var activate = function() {
+var activate = function () {
   blockMap.classList.remove('map--faded');
   setDisabledForm(false);
   showPins();
-}
+};
 
 // неактивный вид
-var deactivate = function() {
+var deactivate = function () {
   setDisabledForm(true);
   hidePins();
-}
+};
 
 // активация по "движению" кекса
 var mainMapPinElem = document.querySelector('.map__pin--main');
-mainMapPinElem.addEventListener('mouseup', function() {
+mainMapPinElem.addEventListener('mouseup', function () {
   activate();
 });
 
-deactivate();
-
-var openPopUp = function(data) {
+var openPopUp = function (data) {
   var mapFilters = blockMap.querySelector('.map__filters-container');
   var card = getMapCard(data, mapCardTemplate);
   var oldCard = blockMap.querySelector('.map__card');
 
-  oldCard ? blockMap.replaceChild(card, oldCard) : blockMap.insertBefore(card, mapFilters); 
+  oldCard ? blockMap.replaceChild(card, oldCard) : blockMap.insertBefore(card, mapFilters);
 };
 
 // Получаем координаты главной геометки
@@ -283,9 +281,10 @@ var setAddress = function (coords) {
 
 // Открыть фото в новом окне
 function changeSizeImage(im) {
-  var win ="width=600,height=600"
-  newWin = window.open(im.src,"newWin",win);
+  var win = 'width=600, height=600';
+  var newWin = window.open(im.src, 'newWin', win);
   newWin.focus();
 }
 
-setAddress( getMainPinCoords() );
+deactivate();
+setAddress(getMainPinCoords());
